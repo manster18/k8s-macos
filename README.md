@@ -1,3 +1,10 @@
+![License](https://img.shields.io/badge/license-MIT-blue.svg)
+![Platform](https://img.shields.io/badge/platform-macOS-lightgrey.svg)
+![Kubernetes](https://img.shields.io/badge/kubernetes-1.28+-326CE5.svg?logo=kubernetes)
+![Kind](https://img.shields.io/badge/kind-supported-success.svg)
+![k3d](https://img.shields.io/badge/k3d-supported-success.svg)
+![Minikube](https://img.shields.io/badge/minikube-supported-success.svg)
+
 # Kubernetes on macOS - Local Development Environment
 
 This repository contains scripts, configurations, and documentation for running Kubernetes clusters locally on macOS.
