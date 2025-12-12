@@ -7,7 +7,7 @@ This document provides a detailed comparison of different solutions for running 
 | Feature | Kind | k3d | Minikube | Docker Desktop | Rancher Desktop |
 |---------|------|-----|----------|----------------|-----------------|
 | **Startup Time** | ~60-120s | ~20-30s | ~90-180s | ~60s | ~60-90s |
-| **Multi-Node** | ✅ Excellent | ✅ Excellent | ✅ Good | ❌ No | ❌ No |
+| **Multi-Node** | Yes (Excellent) | Yes (Excellent) | Yes (Good) | No | No |
 | **Resource Usage** | Medium | Low | High | Medium | Medium |
 | **K8s Version** | Full | k3s (99% compatible) | Full | Full | k3s or Full |
 | **LoadBalancer** | External | Built-in (Traefik) | Tunnel required | Built-in | Built-in |
