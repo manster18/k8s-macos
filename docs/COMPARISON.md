@@ -23,19 +23,19 @@ This document provides a detailed comparison of different solutions for running 
 **Architecture**: Full Kubernetes running in Docker containers as nodes
 
 **Pros:**
-- ✅ True multi-node clusters
-- ✅ Fast cluster creation and deletion
-- ✅ Excellent for CI/CD (used by K8s project itself)
-- ✅ High production parity
-- ✅ Can test cluster upgrades
-- ✅ Port mapping support
-- ✅ Multiple cluster support
+- True multi-node clusters
+- Fast cluster creation and deletion
+- Excellent for CI/CD (used by K8s project itself)
+- High production parity
+- Can test cluster upgrades
+- Port mapping support
+- Multiple cluster support
 
 **Cons:**
-- ❌ No built-in LoadBalancer (needs MetalLB or similar)
-- ❌ Manual registry setup
-- ❌ Higher resource usage than k3d
-- ❌ No built-in dashboard
+- No built-in LoadBalancer (needs MetalLB or similar)
+- Manual registry setup
+- Higher resource usage than k3d
+- No built-in dashboard
 
 **Best Use Cases:**
 - Testing multi-node scenarios
@@ -51,19 +51,19 @@ This document provides a detailed comparison of different solutions for running 
 **Architecture**: Lightweight k3s distribution in Docker containers
 
 **Pros:**
-- ✅ Extremely fast (~30 seconds)
-- ✅ Very lightweight
-- ✅ Built-in LoadBalancer (Traefik)
-- ✅ Easy registry setup
-- ✅ Multi-node support
-- ✅ Lower resource consumption
-- ✅ Great for rapid iteration
+- Extremely fast (~30 seconds)
+- Very lightweight
+- Built-in LoadBalancer (Traefik)
+- Easy registry setup
+- Multi-node support
+- Lower resource consumption
+- Great for rapid iteration
 
 **Cons:**
-- ❌ Uses k3s (not full K8s, though 99% compatible)
-- ❌ Some enterprise features missing
-- ❌ Less "production-like" than full K8s
-- ❌ Smaller community than Minikube
+- Uses k3s (not full K8s, though 99% compatible)
+- Some enterprise features missing
+- Less "production-like" than full K8s
+- Smaller community than Minikube
 
 **Best Use Cases:**
 - Rapid development cycles
@@ -79,20 +79,20 @@ This document provides a detailed comparison of different solutions for running 
 **Architecture**: Full Kubernetes in VM or Docker
 
 **Pros:**
-- ✅ Most mature solution
-- ✅ Multiple driver options (Docker, HyperKit, VirtualBox)
-- ✅ Rich addon ecosystem
-- ✅ Built-in dashboard
-- ✅ Excellent documentation
-- ✅ Multi-node support (newer versions)
-- ✅ Full K8s feature set
-- ✅ LoadBalancer via tunnel
+- Most mature solution
+- Multiple driver options (Docker, HyperKit, VirtualBox)
+- Rich addon ecosystem
+- Built-in dashboard
+- Excellent documentation
+- Multi-node support (newer versions)
+- Full K8s feature set
+- LoadBalancer via tunnel
 
 **Cons:**
-- ❌ Slower startup
-- ❌ Higher resource usage
-- ❌ More complex configuration
-- ❌ Single-node by default
+- Slower startup
+- Higher resource usage
+- More complex configuration
+- Single-node by default
 
 **Best Use Cases:**
 - Learning Kubernetes thoroughly
@@ -108,18 +108,18 @@ This document provides a detailed comparison of different solutions for running 
 **Architecture**: Kubernetes integrated with Docker Desktop
 
 **Pros:**
-- ✅ Zero additional setup
-- ✅ Simple enable/disable
-- ✅ Good Docker integration
-- ✅ Stable and reliable
-- ✅ Built-in LoadBalancer
+- Zero additional setup
+- Simple enable/disable
+- Good Docker integration
+- Stable and reliable
+- Built-in LoadBalancer
 
 **Cons:**
-- ❌ Single-node only
-- ❌ Limited configuration options
-- ❌ Tied to Docker Desktop
-- ❌ Can't test multi-node scenarios
-- ❌ License concerns for enterprises
+- Single-node only
+- Limited configuration options
+- Tied to Docker Desktop
+- Can't test multi-node scenarios
+- License concerns for enterprises
 
 **Best Use Cases:**
 - Simple single-container apps
@@ -134,17 +134,17 @@ This document provides a detailed comparison of different solutions for running 
 **Architecture**: k3s or K8s with container runtime
 
 **Pros:**
-- ✅ Free and open-source
-- ✅ Docker Desktop alternative
-- ✅ Choice of k3s or full K8s
-- ✅ Active development
-- ✅ No licensing issues
+- Free and open-source
+- Docker Desktop alternative
+- Choice of k3s or full K8s
+- Active development
+- No licensing issues
 
 **Cons:**
-- ❌ Single-node only
-- ❌ Relatively newer
-- ❌ Smaller community
-- ❌ Less mature ecosystem
+- Single-node only
+- Relatively newer
+- Smaller community
+- Less mature ecosystem
 
 **Best Use Cases:**
 - Docker Desktop replacement
@@ -191,18 +191,18 @@ Minikube:       ████████████████ (~2-3GB)
 |---------|------|-----|----------|----------------|---------|
 | LoadBalancer | External | Built-in | Tunnel | Built-in | Built-in |
 | Ingress | Manual | Traefik | Addon | Manual | Traefik |
-| NodePort | ✅ | ✅ | ✅ | ✅ | ✅ |
-| ClusterIP | ✅ | ✅ | ✅ | ✅ | ✅ |
-| Custom DNS | ✅ | ✅ | ✅ | Limited | ✅ |
+| NodePort | Yes | Yes | Yes | Yes | Yes |
+| ClusterIP | Yes | Yes | Yes | Yes | Yes |
+| Custom DNS | Yes | Yes | Yes | Limited | Yes |
 
 ### Storage
 
 | Feature | Kind | k3d | Minikube | Docker Desktop | Rancher |
 |---------|------|-----|----------|----------------|---------|
-| PersistentVolumes | ✅ | ✅ | ✅ | ✅ | ✅ |
-| Dynamic Provisioning | ✅ | ✅ | ✅ | ✅ | ✅ |
-| Volume Mounts | ✅ | ✅ | ✅ | ✅ | ✅ |
-| CSI Drivers | ✅ | Limited | ✅ | Limited | Limited |
+| PersistentVolumes | Yes | Yes | Yes | Yes | Yes |
+| Dynamic Provisioning | Yes | Yes | Yes | Yes | Yes |
+| Volume Mounts | Yes | Yes | Yes | Yes | Yes |
+| CSI Drivers | Yes | Limited | Yes | Limited | Limited |
 
 ### Monitoring & Observability
 

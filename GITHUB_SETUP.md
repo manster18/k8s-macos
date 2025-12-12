@@ -5,7 +5,7 @@ This repository is ready to be pushed to GitHub. Follow these steps:
 ## Step 1: Create GitHub Repository
 
 1. Go to [GitHub](https://github.com) and log in
-2. Click the "+" icon in the top right → "New repository"
+2. Click the "+" icon in the top right, then "New repository"
 3. Repository name: `k8s-macos` (or your preferred name)
 4. Description: "Local Kubernetes development environment for macOS"
 5. Choose: **Public** or **Private**
@@ -14,11 +14,9 @@ This repository is ready to be pushed to GitHub. Follow these steps:
 
 ## Step 2: Push to GitHub
 
-After creating the repository on GitHub, run these commands:
+After creating the repository on GitHub, run these commands from the repository root:
 
 ```bash
-cd /Users/manster/Documents/git/my_repos/k8s_macos
-
 # Add GitHub remote (replace YOUR_USERNAME with your GitHub username)
 git remote add origin https://github.com/YOUR_USERNAME/k8s-macos.git
 
@@ -33,7 +31,7 @@ git push -u origin main
 ## Step 3: Configure Repository Settings (Optional)
 
 ### Add Topics
-In your GitHub repository, click "⚙️ Settings" → "About" → "Topics", add:
+In your GitHub repository, click "Settings", then "About", then "Topics". Add:
 - `kubernetes`
 - `k8s`
 - `macos`
@@ -44,10 +42,10 @@ In your GitHub repository, click "⚙️ Settings" → "About" → "Topics", add
 - `docker`
 
 ### Add Description
-"🚀 Complete setup for running Kubernetes clusters locally on macOS using Kind, k3d, or Minikube"
+"Complete setup for running Kubernetes clusters locally on macOS using Kind, k3d, or Minikube"
 
 ### Enable Discussions (Optional)
-Settings → General → Features → ✅ Discussions
+Settings → General → Features → Check "Discussions"
 
 ## Step 4: Add a Repository Image (Optional)
 
@@ -75,28 +73,28 @@ Then on GitHub:
 
 Your repository now includes:
 
-✅ **Well-structured documentation**
+**Well-structured documentation:**
 - Main README with overview
 - Quick Start guide
 - Detailed comparison of solutions
 - Architecture documentation
 - Getting started guide
 
-✅ **Three Kubernetes solutions**
+**Three Kubernetes solutions:**
 - Kind (multi-node testing)
 - k3d (fast development)
 - Minikube (full features)
 
-✅ **Automated setup scripts**
+**Automated setup scripts:**
 - One-command cluster creation
 - Interactive installation
 - Easy teardown
 
-✅ **Example applications**
+**Example applications:**
 - Hello World deployment
 - Ready to use
 
-✅ **Professional setup**
+**Professional setup:**
 - MIT License
 - .gitignore configured
 - Git repository initialized
@@ -155,7 +153,7 @@ If you want others to contribute:
 
 1. Add a CONTRIBUTING.md file
 2. Enable Issues in repository settings
-3. Add a CODE_OF_CONDUCT.md
+3. Add a CODE_OF_CONDUCT.md (optional)
 
 ## GitHub Pages (Optional)
 
@@ -166,7 +164,7 @@ You can host documentation using GitHub Pages:
 3. Branch: main, folder: /docs
 4. Save
 
-## Star the Repository ⭐
+## Star the Repository
 
 Don't forget to star your own repository for easy access!
 
@@ -192,7 +190,6 @@ git checkout -b feature/new-feature
 git push -u origin feature/new-feature
 ```
 
-## Congratulations! 🎉
+## Congratulations!
 
 Your Kubernetes on macOS repository is ready for GitHub!
-

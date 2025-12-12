@@ -343,5 +343,5 @@ If you encounter issues:
 6. **Clean Up**: Delete unused clusters to free resources
 7. **Multiple Clusters**: Use different tools for different purposes
 
-Happy Kuberneting! 🚀
+Happy Kuberneting!
 
