@@ -7,7 +7,7 @@ YELLOW='\033[1;33m'
 RED='\033[0;31m'
 NC='\033[0m' # No Color
 
-CLUSTER_NAME="minikube"
+# Cluster configuration
 NODES=3
 CPUS=4
 MEMORY=8192

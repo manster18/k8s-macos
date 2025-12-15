@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.1] - 2025-12-15
+
+### Fixed
+- Removed unused CLUSTER_NAME variable from minikube/setup.sh
+- Fixed shellcheck warning in setup scripts
+
+### Improved
+- Better ASCII diagram formatting in Architecture documentation
+- Improved text alignment in install-tools.sh header
+- Added repository badges to README.md
+
 ## [1.0.0] - 2025-12-12
 
 ### Added

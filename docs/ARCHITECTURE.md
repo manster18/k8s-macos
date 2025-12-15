@@ -27,11 +27,11 @@ This document explains the architecture of different local Kubernetes solutions 
 │         macOS Host                  │
 │  ┌───────────────────────────────┐  │
 │  │   Docker Desktop              │  │
-│  │  ┌──────┐  ┌──────┐  ┌──────┐│  │
-│  │  │ Node │  │ Node │  │ Node ││  │
-│  │  │  1   │  │  2   │  │  3   ││  │
-│  │  │(Cont)│  │(Cont)│  │(Cont)││  │
-│  │  └──────┘  └──────┘  └──────┘│  │
+│  │  ┌──────┐  ┌──────┐  ┌──────┐ │  │
+│  │  │ Node │  │ Node │  │ Node │ │  │
+│  │  │  1   │  │  2   │  │  3   │ │  │
+│  │  │(Cont)│  │(Cont)│  │(Cont)│ │  │
+│  │  └──────┘  └──────┘  └──────┘ │  │
 │  └───────────────────────────────┘  │
 └─────────────────────────────────────┘
 ```
@@ -41,31 +41,31 @@ This document explains the architecture of different local Kubernetes solutions 
 ### 1. Kind Architecture
 
 ```
-┌─────────────────────────────────────────────────────┐
-│                  macOS Host                         │
-│                                                     │
+┌───────────────────────────────────────────────────┐
+│                  macOS Host                       │
+│                                                   │
 │  ┌────────────────────────────────────────────┐   │
-│  │         Docker Desktop                      │   │
-│  │                                             │   │
-│  │  ┌──────────────┐  ┌──────────────┐       │   │
-│  │  │ Control      │  │ Worker       │       │   │
-│  │  │ Plane        │  │ Node 1       │       │   │
-│  │  │ Container    │  │ Container    │       │   │
-│  │  │              │  │              │       │   │
-│  │  │ - API Server │  │ - kubelet    │       │   │
-│  │  │ - etcd       │  │ - containerd │ ...   │   │
-│  │  │ - scheduler  │  │ - kube-proxy │       │   │
-│  │  │ - controller │  │              │       │   │
-│  │  └──────────────┘  └──────────────┘       │   │
+│  │         Docker Desktop                     │   │
+│  │                                            │   │
+│  │  ┌──────────────┐  ┌──────────────┐        │   │
+│  │  │ Control      │  │ Worker       │        │   │
+│  │  │ Plane        │  │ Node 1       │        │   │
+│  │  │ Container    │  │ Container    │        │   │
+│  │  │              │  │              │        │   │
+│  │  │ - API Server │  │ - kubelet    │        │   │
+│  │  │ - etcd       │  │ - containerd │ ...    │   │
+│  │  │ - scheduler  │  │ - kube-proxy │        │   │
+│  │  │ - controller │  │              │        │   │
+│  │  └──────────────┘  └──────────────┘        │   │
 │  │         ↑                  ↑               │   │
 │  │         └──────────────────┘               │   │
 │  │           Docker Network                   │   │
 │  └────────────────────────────────────────────┘   │
-│                      ↑                             │
-│                      │                             │
-│                  Port Mapping                      │
-│                (80, 443, 6443)                     │
-└─────────────────────────────────────────────────────┘
+│                      ↑                            │
+│                      │                            │
+│                  Port Mapping                     │
+│                (80, 443, 6443)                    │
+└───────────────────────────────────────────────────┘
 ```
 
 **Key Points:**
@@ -78,29 +78,29 @@ This document explains the architecture of different local Kubernetes solutions 
 ### 2. k3d Architecture
 
 ```
-┌─────────────────────────────────────────────────────┐
-│                  macOS Host                         │
-│                                                     │
+┌───────────────────────────────────────────────────┐
+│                  macOS Host                       │
+│                                                   │
 │  ┌────────────────────────────────────────────┐   │
-│  │         Docker Desktop                      │   │
-│  │                                             │   │
-│  │  ┌──────────────┐     ┌──────────────┐    │   │
-│  │  │ k3s Server   │     │ k3s Agent    │    │   │
-│  │  │ Container    │ ... │ Container    │    │   │
-│  │  │              │     │              │    │   │
-│  │  │ - API Server │     │ - kubelet    │    │   │
-│  │  │ - SQLite     │     │ - containerd │    │   │
-│  │  │ - Scheduler  │     │              │    │   │
-│  │  └──────────────┘     └──────────────┘    │   │
+│  │         Docker Desktop                     │   │
+│  │                                            │   │
+│  │  ┌──────────────┐     ┌──────────────┐     │   │
+│  │  │ k3s Server   │     │ k3s Agent    │     │   │
+│  │  │ Container    │ ... │ Container    │     │   │
+│  │  │              │     │              │     │   │
+│  │  │ - API Server │     │ - kubelet    │     │   │
+│  │  │ - SQLite     │     │ - containerd │     │   │
+│  │  │ - Scheduler  │     │              │     │   │
+│  │  └──────────────┘     └──────────────┘     │   │
 │  │         ↑                     ↑            │   │
-│  │  ┌──────┴─────────────────────┴─────┐     │   │
-│  │  │      Load Balancer Container     │     │   │
-│  │  │          (Traefik)               │     │   │
-│  │  └──────────────────────────────────┘     │   │
+│  │  ┌──────┴─────────────────────┴─────┐      │   │
+│  │  │      Load Balancer Container     │      │   │
+│  │  │          (Traefik)               │      │   │
+│  │  └──────────────────────────────────┘      │   │
 │  │                   ↑                        │   │
 │  └───────────────────┼────────────────────────┘   │
-│              Port Mapping (80, 443)                │
-└─────────────────────────────────────────────────────┘
+│              Port Mapping (80, 443)               │
+└───────────────────────────────────────────────────┘
 ```
 
 **Key Points:**
@@ -113,12 +113,12 @@ This document explains the architecture of different local Kubernetes solutions 
 ### 3. Minikube Architecture (Docker Driver)
 
 ```
-┌─────────────────────────────────────────────────────┐
-│                  macOS Host                         │
-│                                                     │
+┌───────────────────────────────────────────────────┐
+│                  macOS Host                       │
+│                                                   │
 │  ┌────────────────────────────────────────────┐   │
-│  │         Docker Desktop                      │   │
-│  │                                             │   │
+│  │         Docker Desktop                     │   │
+│  │                                            │   │
 │  │  ┌──────────────────────────────────┐      │   │
 │  │  │  Minikube Container              │      │   │
 │  │  │                                  │      │   │
@@ -135,10 +135,10 @@ This document explains the architecture of different local Kubernetes solutions 
 │  │  │  │  - Addons (optional)   │      │      │   │
 │  │  │  └────────────────────────┘      │      │   │
 │  │  └──────────────────────────────────┘      │   │
-│  │                   ↑                         │   │
-│  └───────────────────┼─────────────────────────┘   │
-│              Port Mapping / Tunnel                  │
-└─────────────────────────────────────────────────────┘
+│  │                   ↑                        │   │
+│  └───────────────────┼────────────────────────┘   │
+│              Port Mapping / Tunnel                │
+└───────────────────────────────────────────────────┘
 ```
 
 **Key Points:**
@@ -151,12 +151,12 @@ This document explains the architecture of different local Kubernetes solutions 
 ### 4. Docker Desktop Kubernetes
 
 ```
-┌─────────────────────────────────────────────────────┐
-│                  macOS Host                         │
-│                                                     │
+┌───────────────────────────────────────────────────┐
+│                  macOS Host                       │
+│                                                   │
 │  ┌────────────────────────────────────────────┐   │
 │  │      Docker Desktop (Built-in K8s)         │   │
-│  │                                             │   │
+│  │                                            │   │
 │  │  ┌──────────────────────────────────┐      │   │
 │  │  │   Kubernetes VM                  │      │   │
 │  │  │                                  │      │   │
@@ -168,12 +168,12 @@ This document explains the architecture of different local Kubernetes solutions 
 │  │  │                                  │      │   │
 │  │  │   Single-node cluster            │      │   │
 │  │  └──────────────────────────────────┘      │   │
-│  │                                             │   │
-│  │  Tightly integrated with Docker             │   │
+│  │                                            │   │
+│  │  Tightly integrated with Docker            │   │
 │  └────────────────────────────────────────────┘   │
-│                      ↑                             │
-│              Automatic Networking                  │
-└─────────────────────────────────────────────────────┘
+│                      ↑                            │
+│              Automatic Networking                 │
+└───────────────────────────────────────────────────┘
 ```
 
 **Key Points:**
