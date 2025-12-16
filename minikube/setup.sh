@@ -118,6 +118,18 @@ echo "  minikube service <service-name>      # Access a service"
 echo "  minikube tunnel                      # Enable LoadBalancer services"
 echo "  minikube ssh                         # SSH into node"
 echo
+echo -e "${BLUE}=== Next Steps ===${NC}"
+echo
+echo "1. Deploy demo application to test your cluster:"
+echo "   kubectl apply -f examples/demo-app/"
+echo
+echo "2. Access the app:"
+echo "   minikube tunnel  # In separate terminal"
+echo "   open http://localhost"
+echo
+echo "3. View detailed demo instructions:"
+echo "   cat examples/demo-app/README.md"
+echo
 echo "To delete the cluster later, run:"
 echo "  minikube delete"
 echo "  or"
