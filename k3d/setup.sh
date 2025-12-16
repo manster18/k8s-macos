@@ -70,16 +70,50 @@ echo
 read -p "Do you want to create a local Docker registry? (y/n): " -n 1 -r
 echo
 if [[ $REPLY =~ ^[Yy]$ ]]; then
-    echo -e "${YELLOW}Creating local registry...${NC}"
-    k3d registry create registry.localhost --port 5000
+    # Function to check if port is available
+    check_port() {
+        local port=$1
+        if lsof -Pi :"${port}" -sTCP:LISTEN -t >/dev/null 2>&1 ; then
+            return 1  # Port is in use
+        else
+            return 0  # Port is available
+        fi
+    }
+    
+    DEFAULT_PORT=5050
+    REGISTRY_PORT=""
+    
+    while true; do
+        read -r -p "Enter registry port [default: ${DEFAULT_PORT}]: " REGISTRY_PORT
+        REGISTRY_PORT=${REGISTRY_PORT:-$DEFAULT_PORT}
+        
+        # Validate port number
+        if ! [[ "$REGISTRY_PORT" =~ ^[0-9]+$ ]] || [ "$REGISTRY_PORT" -lt 1024 ] || [ "$REGISTRY_PORT" -gt 65535 ]; then
+            echo -e "${RED}Error: Port must be a number between 1024 and 65535${NC}"
+            continue
+        fi
+        
+        # Check if port is available
+        if check_port "$REGISTRY_PORT"; then
+            echo -e "${GREEN}Port ${REGISTRY_PORT} is available${NC}"
+            break
+        else
+            echo -e "${YELLOW}Port ${REGISTRY_PORT} is already in use${NC}"
+            lsof -i :"${REGISTRY_PORT}" | head -2
+            echo
+        fi
+    done
+    
+    echo -e "${YELLOW}Creating local registry on port ${REGISTRY_PORT}...${NC}"
+    k3d registry create registry.localhost --port "${REGISTRY_PORT}"
     
     # Connect registry to cluster
     docker network connect k3d-${CLUSTER_NAME} k3d-registry.localhost || true
     
-    echo -e "${GREEN}Registry created at localhost:5000${NC}"
+    echo -e "${GREEN}Registry created at localhost:${REGISTRY_PORT}${NC}"
     echo "To use it, tag and push images like:"
-    echo "  docker tag my-image:latest localhost:5000/my-image:latest"
-    echo "  docker push localhost:5000/my-image:latest"
+    echo "  docker tag my-image:latest localhost:${REGISTRY_PORT}/my-image:latest"
+    echo "  docker push localhost:${REGISTRY_PORT}/my-image:latest"
 fi
 
 # Optional: Install metrics-server
@@ -104,6 +138,18 @@ echo
 echo "LoadBalancer services will be accessible at:"
 echo "  HTTP:  http://localhost:80"
 echo "  HTTPS: https://localhost:443"
+echo
+echo -e "${BLUE}=== Next Steps ===${NC}"
+echo
+echo "1. Deploy demo application to test your cluster:"
+echo "   kubectl apply -f examples/demo-app/"
+echo "   open http://localhost"
+echo
+echo "2. Or follow the quick test guide:"
+echo "   cat examples/demo-app/QUICK_TEST.md"
+echo
+echo "3. View detailed demo instructions:"
+echo "   cat examples/demo-app/README.md"
 echo
 echo "To delete the cluster later, run:"
 echo "  k3d cluster delete ${CLUSTER_NAME}"

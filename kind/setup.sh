@@ -96,6 +96,18 @@ echo "To interact with the cluster, use:"
 echo "  kubectl get nodes"
 echo "  kubectl get pods --all-namespaces"
 echo
+echo -e "${BLUE}=== Next Steps ===${NC}"
+echo
+echo "1. Deploy demo application to test your cluster:"
+echo "   kubectl apply -f examples/demo-app/"
+echo
+echo "2. Access the app (use port-forward for Kind):"
+echo "   kubectl port-forward svc/demo-app 8080:80"
+echo "   open http://localhost:8080"
+echo
+echo "3. View detailed demo instructions:"
+echo "   cat examples/demo-app/README.md"
+echo
 echo "To delete the cluster later, run:"
 echo "  kind delete cluster --name ${CLUSTER_NAME}"
 echo "  or"

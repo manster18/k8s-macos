@@ -2,6 +2,44 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.0] - 2025-12-16
+
+### Added
+- Complete demo application for cluster testing (`examples/demo-app/`)
+  - Production-ready Kubernetes manifests (Deployment, Service, Ingress)
+  - 3-replica deployment with health checks and resource limits
+  - LoadBalancer service for easy external access
+  - Optional Ingress configuration
+- Comprehensive testing documentation
+  - `QUICK_TEST.md` - 1-minute quick start guide
+  - `README.md` - Full demo app documentation
+  - `TESTING_GUIDE.md` - Complete testing manual
+  - `LOAD_BALANCING_EXPLAINED.md` - Deep dive into L4 vs L7 load balancing
+- Automated load balancing test script (`test-loadbalancing.sh`)
+  - Visual distribution charts
+  - Automatic cluster type detection
+  - Compatible with bash 3.2+ (macOS default)
+- Post-setup instructions (`POST_SETUP_INSTRUCTIONS.md`)
+- Integration with all setup scripts (k3d, Kind, Minikube)
+
+### Fixed
+- k3d cluster configuration - removed conflicting network/subnet settings
+- k3d registry port conflict with macOS AirPlay Receiver (port 5000)
+  - Added interactive port selection with validation
+  - Default port changed to 5050
+  - Port availability check before creating registry
+- Bash 3.2 compatibility in test scripts (removed associative arrays)
+- HTML parsing in load balancing test script
+
+### Improved
+- k3d setup script with better port handling and user guidance
+- All setup scripts now show clear next steps after completion
+- Added testing section to k3d README
+- Documentation for macOS-specific issues (AirPlay Receiver port conflict)
+
+### Changed
+- Removed emojis from `LOAD_BALANCING_EXPLAINED.md` for consistency
+
 ## [1.0.1] - 2025-12-15
 
 ### Fixed

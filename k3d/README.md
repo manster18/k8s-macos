@@ -105,6 +105,27 @@ k3d registry create my-registry.localhost --port 5000
 - Learning Kubernetes
 - Development environments
 
+## Testing Your Cluster
+
+After creating the cluster, deploy a demo application to verify everything works:
+
+```bash
+# Quick test
+kubectl apply -f ../examples/demo-app/
+kubectl wait --for=condition=Ready pods -l app=demo-app --timeout=60s
+
+# Access the app
+open http://localhost
+
+# Or use the test script
+../examples/demo-app/test-loadbalancing.sh
+
+# Clean up
+kubectl delete -f ../examples/demo-app/
+```
+
+See `examples/demo-app/README.md` for detailed instructions.
+
 ## Troubleshooting
 
 ### Port already in use
@@ -112,6 +133,13 @@ k3d registry create my-registry.localhost --port 5000
 # Check what's using the port
 lsof -i :80
 # Use different ports in config
+```
+
+**Note for macOS users:** Port 5000 is often occupied by macOS ControlCenter (AirPlay Receiver) starting from macOS Monterey. The setup script will automatically prompt for an alternative port (default: 5050) when creating a local registry.
+
+To disable AirPlay Receiver in macOS:
+```bash
+System Settings → General → AirDrop & Handoff → Uncheck "AirPlay Receiver"
 ```
 
 ### Cluster won't start
