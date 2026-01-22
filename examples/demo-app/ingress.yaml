@@ -9,6 +9,17 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
+  # Default rule - accessible via http://localhost
+  - http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: demo-app
+            port:
+              number: 80
+  # Optional: Custom domain (add "127.0.0.1 demo.local" to /etc/hosts)
   - host: demo.local
     http:
       paths:

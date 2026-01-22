@@ -23,10 +23,12 @@ curl http://localhost
 
 ### Kind
 ```bash
-# Terminal 1: Port-forward
-kubectl port-forward svc/demo-app 8080:80
+# With Ingress (recommended - load balancing works):
+open http://localhost
+curl http://localhost
 
-# Terminal 2: Access
+# Without Ingress (fallback - single pod):
+kubectl port-forward svc/demo-app 8080:80
 open http://localhost:8080
 ```
 

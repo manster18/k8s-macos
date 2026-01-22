@@ -75,18 +75,53 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
         -p '[{"op":"add","path":"/spec/template/spec/containers/0/args/-","value":"--kubelet-insecure-tls"}]'
 fi
 
-# Optional: Install ingress-nginx
-read -p "Do you want to install NGINX Ingress Controller? (y/n): " -n 1 -r
+# Install ingress-nginx (recommended for Kind on macOS)
+echo -e "${YELLOW}Note: Kind on macOS requires Ingress for external access with load balancing.${NC}"
+echo -e "${YELLOW}LoadBalancer services work internally, but Ingress provides host access.${NC}"
+echo
+read -p "Install NGINX Ingress Controller? (recommended) (y/n): " -n 1 -r
 echo
 if [[ $REPLY =~ ^[Yy]$ ]]; then
     echo -e "${YELLOW}Installing NGINX Ingress Controller...${NC}"
     kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml
+    
+    echo -e "${YELLOW}Configuring Ingress for control-plane node...${NC}"
+    # Label control-plane node for ingress
+    kubectl label node ${CLUSTER_NAME}-control-plane ingress-ready=true --overwrite
+    
+    # Patch deployment to run on control-plane (where ports 80/443 are mapped)
+    # Must add both nodeSelector AND toleration
+    kubectl patch deployment ingress-nginx-controller -n ingress-nginx --type='json' -p='[
+      {
+        "op": "add",
+        "path": "/spec/template/spec/nodeSelector/ingress-ready",
+        "value": "true"
+      },
+      {
+        "op": "add",
+        "path": "/spec/template/spec/tolerations",
+        "value": [
+          {
+            "effect": "NoSchedule",
+            "key": "node-role.kubernetes.io/control-plane",
+            "operator": "Equal"
+          }
+        ]
+      }
+    ]'
     
     echo -e "${YELLOW}Waiting for ingress controller to be ready...${NC}"
     kubectl wait --namespace ingress-nginx \
         --for=condition=ready pod \
         --selector=app.kubernetes.io/component=controller \
         --timeout=300s
+    
+    echo -e "${GREEN}Ingress Controller ready! Services accessible via http://localhost${NC}"
+    INGRESS_INSTALLED=true
+else
+    echo -e "${YELLOW}Skipping Ingress installation.${NC}"
+    echo -e "${YELLOW}Note: You'll need to use kubectl port-forward to access services.${NC}"
+    INGRESS_INSTALLED=false
 fi
 
 echo
@@ -96,16 +131,33 @@ echo "To interact with the cluster, use:"
 echo "  kubectl get nodes"
 echo "  kubectl get pods --all-namespaces"
 echo
-echo -e "${BLUE}=== Next Steps ===${NC}"
+echo -e "${YELLOW}=== Next Steps ===${NC}"
 echo
 echo "1. Deploy demo application to test your cluster:"
 echo "   kubectl apply -f examples/demo-app/"
 echo
-echo "2. Access the app (use port-forward for Kind):"
-echo "   kubectl port-forward svc/demo-app 8080:80"
-echo "   open http://localhost:8080"
+if [ "${INGRESS_INSTALLED}" = true ]; then
+    echo "2. Access the app via Ingress (with load balancing):"
+    echo "   # Wait for demo-app to be ready, then:"
+    echo "   curl http://localhost"
+    echo "   open http://localhost"
+    echo
+    echo "   Note: Add 'demo.local' to /etc/hosts for custom domain:"
+    echo "   echo '127.0.0.1 demo.local' | sudo tee -a /etc/hosts"
+    echo "   curl http://demo.local"
+else
+    echo "2. Access the app via port-forward (single pod):"
+    echo "   kubectl port-forward svc/demo-app 8080:80"
+    echo "   open http://localhost:8080"
+    echo
+    echo "   For load balancing, install Ingress Controller:"
+    echo "   See kind/README.md for instructions"
+fi
 echo
-echo "3. View detailed demo instructions:"
+echo "3. Test load balancing:"
+echo "   bash examples/demo-app/test-loadbalancing.sh"
+echo
+echo "4. View detailed demo instructions:"
 echo "   cat examples/demo-app/README.md"
 echo
 echo "To delete the cluster later, run:"
