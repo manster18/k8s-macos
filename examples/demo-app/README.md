@@ -57,7 +57,29 @@ curl http://localhost
 ```
 
 #### For Kind:
-Use port-forward:
+
+Kind on macOS requires Ingress for external access with load balancing.
+
+**Option 1: Using Ingress (Recommended - with load balancing)**
+
+```bash
+# 1. Ensure Ingress Controller is installed (done by setup.sh)
+kubectl get pods -n ingress-nginx
+
+# 2. Deploy the application (includes ingress.yaml)
+kubectl apply -f examples/demo-app/
+
+# 3. Access via localhost (Ingress handles load balancing)
+curl http://localhost
+open http://localhost
+
+# Optional: Use custom domain
+echo "127.0.0.1 demo.local" | sudo tee -a /etc/hosts
+curl http://demo.local
+open http://demo.local
+```
+
+**Option 2: Using port-forward (No load balancing)**
 
 ```bash
 kubectl port-forward svc/demo-app 8080:80
@@ -65,8 +87,7 @@ kubectl port-forward svc/demo-app 8080:80
 # Open in browser
 open http://localhost:8080
 
-# Or use curl
-curl http://localhost:8080
+# Note: port-forward connects to a single pod only
 ```
 
 #### For Minikube:
@@ -160,13 +181,18 @@ kubectl get pods -l app=demo-app
 kubectl scale deployment demo-app --replicas=3
 ```
 
-## Optional: Deploy Ingress
+## Ingress Configuration
 
-For HTTP routing with custom domains:
+The Ingress resource is automatically deployed with `kubectl apply -f examples/demo-app/`.
+
+**Features:**
+- Default route: accessible via `http://localhost`
+- Custom domain: accessible via `http://demo.local` (requires /etc/hosts entry)
+- Load balancing across all pods
+
+**For custom domain access:**
 
 ```bash
-kubectl apply -f ingress.yaml
-
 # Add to /etc/hosts (requires sudo)
 echo "127.0.0.1 demo.local" | sudo tee -a /etc/hosts
 
@@ -174,6 +200,8 @@ echo "127.0.0.1 demo.local" | sudo tee -a /etc/hosts
 curl http://demo.local
 open http://demo.local
 ```
+
+**Note:** Ingress requires an Ingress Controller (nginx-ingress recommended for Kind).
 
 ## Monitor Resources
 
@@ -201,6 +229,28 @@ kubectl get events --sort-by='.lastTimestamp' | tail -20
 
 ### Can't access the application
 
+**For Kind with Ingress:**
+```bash
+# 1. Check Ingress Controller is running
+kubectl get pods -n ingress-nginx
+
+# 2. Check Ingress resource
+kubectl get ingress demo-app
+kubectl describe ingress demo-app
+
+# 3. Check service and endpoints
+kubectl get svc demo-app
+kubectl get endpoints demo-app
+
+# 4. Test if ingress is working
+curl -v http://localhost
+
+# 5. Fallback: Use port-forward
+kubectl port-forward svc/demo-app 8080:80
+curl http://localhost:8080
+```
+
+**For other clusters:**
 ```bash
 # Check service
 kubectl get svc demo-app
@@ -211,6 +261,18 @@ kubectl get endpoints demo-app
 # Use port-forward as fallback
 kubectl port-forward svc/demo-app 8080:80
 ```
+
+### Load balancing not working (seeing only one pod)
+
+**For Kind users:**
+- If using port-forward: This is expected - port-forward connects to ONE pod
+- Solution: Use Ingress for true load balancing (see Kind setup instructions)
+
+**For browser users (any cluster):**
+- Browsers reuse HTTP connections (Keep-Alive), showing the same pod
+- This is normal HTTP behavior, not a Kubernetes issue
+- Use test script to verify: `bash examples/demo-app/test-loadbalancing.sh`
+- See `LOAD_BALANCING_EXPLAINED.md` for details
 
 ### Image pull errors
 

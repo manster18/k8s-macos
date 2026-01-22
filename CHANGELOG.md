@@ -2,6 +2,58 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+
+### Added
+- Ingress-based load balancing solution for Kind clusters on macOS
+  - nginx-ingress controller installation prompt in kind/setup.sh
+  - Automatic setup guidance based on Ingress installation status
+  - Default route accessible via http://localhost
+  - Custom domain support (demo.local)
+- Comprehensive documentation for Kind network limitations on macOS
+  - Explanation of Docker VM network isolation
+  - LoadBalancer vs Ingress comparison
+  - Step-by-step Ingress setup guide in kind/README.md
+- Intelligent test script that detects Ingress availability
+  - Auto-uses Ingress when available (true load balancing)
+  - Falls back to port-forward with clear warnings
+  - Waits for Ingress Controller readiness
+
+### Improved
+- demo-app Ingress manifest now supports both localhost and custom domain access
+  - Default rule for http://localhost (no host header required)
+  - Optional demo.local rule for custom domain testing
+- Enhanced demo-app documentation with Kind-specific instructions
+  - Two access methods clearly documented (Ingress vs port-forward)
+  - Load balancing troubleshooting section
+  - Ingress configuration explained
+- Updated kind/setup.sh with better user guidance
+  - Explains why Ingress is needed on macOS
+  - Post-installation instructions adapt to Ingress availability
+  - Clear distinction between load-balanced and single-pod access
+- Improved test-loadbalancing.sh for Kind clusters
+  - Detects nginx-ingress namespace and demo-app ingress
+  - Uses localhost when Ingress is available
+  - Provides setup instructions when Ingress is missing
+
+### Fixed
+- Kind load balancing now works properly via Ingress
+  - Resolves issue where port-forward connected to single pod only
+  - Users can now test true load balancing on macOS
+- Ingress Controller now correctly runs on control-plane node
+  - Fixed issue where Ingress ran on worker node without port mapping
+  - Added toleration and automatic labeling to ensure correct placement
+  - Ports 80/443 are mapped to control-plane in cluster-config.yaml
+- Documentation clarity around Kind networking limitations
+  - Explains why LoadBalancer services don't work on macOS
+  - Provides working solution (Ingress) instead of non-functional approach
+
+### Documentation
+- Added "Accessing Services on macOS" section to kind/README.md
+- Updated troubleshooting sections across all documentation
+- Clarified that port-forward is single-pod only (not load-balanced)
+- Added comparison: k3d (built-in ServiceLB) vs Kind (requires Ingress)
+
 ## [1.1.0] - 2025-12-16
 
 ### Added

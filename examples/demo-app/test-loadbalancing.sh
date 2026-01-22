@@ -35,12 +35,36 @@ fi
 # Determine the URL based on the cluster type
 URL="http://localhost"
 
-# Check if we're using minikube or kind (need port-forward)
+# Check if we're using kind
 if kubectl config current-context | grep -q "kind"; then
-    echo -e "${YELLOW}Detected Kind cluster - using port-forward${NC}"
-    echo "Run in another terminal: kubectl port-forward svc/demo-app 8080:80"
-    URL="http://localhost:8080"
-    read -r -p "Press Enter when port-forward is ready..."
+    echo -e "${YELLOW}Detected Kind cluster${NC}"
+    
+    # Check if Ingress is installed and demo-app ingress exists
+    if kubectl get namespace ingress-nginx &> /dev/null && \
+       kubectl get ingress demo-app &> /dev/null; then
+        echo -e "${GREEN}Ingress Controller detected - using http://localhost${NC}"
+        echo "Load balancing will be handled by nginx-ingress"
+        URL="http://localhost"
+        
+        # Check if ingress controller is ready
+        INGRESS_READY=$(kubectl get pods -n ingress-nginx -l app.kubernetes.io/component=controller -o jsonpath='{.items[0].status.conditions[?(@.type=="Ready")].status}' 2>/dev/null)
+        if [ "$INGRESS_READY" != "True" ]; then
+            echo -e "${YELLOW}Waiting for Ingress Controller to be ready...${NC}"
+            kubectl wait --namespace ingress-nginx \
+                --for=condition=ready pod \
+                --selector=app.kubernetes.io/component=controller \
+                --timeout=60s
+        fi
+    else
+        echo -e "${YELLOW}Ingress not detected - using port-forward (single pod)${NC}"
+        echo "Run in another terminal: kubectl port-forward svc/demo-app 8080:80"
+        echo ""
+        echo "For load balancing, install Ingress:"
+        echo "  kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml"
+        echo "  kubectl apply -f examples/demo-app/ingress.yaml"
+        URL="http://localhost:8080"
+        read -r -p "Press Enter when port-forward is ready..."
+    fi
 elif kubectl config current-context | grep -q "minikube"; then
     echo -e "${YELLOW}Detected Minikube cluster${NC}"
     echo "Make sure 'minikube tunnel' is running in another terminal"
