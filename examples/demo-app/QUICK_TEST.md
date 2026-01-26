@@ -4,8 +4,17 @@ Fast track to verify your cluster is working!
 
 ## One-Command Deploy
 
+**For k3d and Kind:**
 ```bash
 kubectl apply -f examples/demo-app/ && \
+kubectl wait --for=condition=Ready pods -l app=demo-app --timeout=60s && \
+echo "Demo app is ready!"
+```
+
+**For Minikube (LoadBalancer only, no Ingress):**
+```bash
+kubectl apply -f examples/demo-app/deployment.yaml && \
+kubectl apply -f examples/demo-app/service.yaml && \
 kubectl wait --for=condition=Ready pods -l app=demo-app --timeout=60s && \
 echo "Demo app is ready!"
 ```
@@ -34,8 +43,12 @@ open http://localhost:8080
 
 ### Minikube
 ```bash
-# Terminal 1: Tunnel
-minikube tunnel
+# Deploy only deployment and service (NOT ingress.yaml)
+kubectl apply -f examples/demo-app/deployment.yaml
+kubectl apply -f examples/demo-app/service.yaml
+
+# Terminal 1: Tunnel (requires sudo for port 80!)
+sudo minikube tunnel
 
 # Terminal 2: Access
 open http://localhost

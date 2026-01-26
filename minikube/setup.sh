@@ -118,17 +118,22 @@ echo "  minikube service <service-name>      # Access a service"
 echo "  minikube tunnel                      # Enable LoadBalancer services"
 echo "  minikube ssh                         # SSH into node"
 echo
-echo -e "${BLUE}=== Next Steps ===${NC}"
+echo -e "${GREEN}=== Next Steps ===${NC}"
 echo
 echo "1. Deploy demo application to test your cluster:"
-echo "   kubectl apply -f examples/demo-app/"
+echo "   kubectl apply -f examples/demo-app/deployment.yaml"
+echo "   kubectl apply -f examples/demo-app/service.yaml"
 echo
-echo "2. Access the app:"
-echo "   minikube tunnel  # In separate terminal"
+echo "2. Access the app (LoadBalancer requires sudo tunnel):"
+echo "   ${YELLOW}IMPORTANT: Run with sudo for port 80 access!${NC}"
+echo "   sudo minikube tunnel  # In separate terminal, enter password when prompted"
 echo "   open http://localhost"
 echo
 echo "3. View detailed demo instructions:"
 echo "   cat examples/demo-app/README.md"
+echo
+echo -e "${YELLOW}Note: Do NOT deploy ingress.yaml when using LoadBalancer service.${NC}"
+echo -e "${YELLOW}LoadBalancer with 'minikube tunnel' provides direct access with load balancing.${NC}"
 echo
 echo "To delete the cluster later, run:"
 echo "  minikube delete"

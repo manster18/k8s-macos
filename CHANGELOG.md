@@ -2,6 +2,39 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.2.1] - 2026-01-23
+
+### Fixed
+- **Critical:** Minikube LoadBalancer service access requires `sudo minikube tunnel`
+  - Port 80 (and other privileged ports < 1024) require root access on macOS/Linux
+  - Updated all documentation to explicitly mention sudo requirement
+  - Added troubleshooting for connection refused errors on port 80
+
+### Improved
+- Enhanced Minikube setup script (minikube/setup.sh)
+  - Added clear warning about sudo requirement for tunnel
+  - Updated post-setup instructions with correct deploy commands
+  - Clarified that ingress.yaml should NOT be used with LoadBalancer service
+- Comprehensive Minikube LoadBalancer documentation (minikube/README.md)
+  - Added dedicated "LoadBalancer Services" section
+  - Explained why sudo is required for privileged ports
+  - Documented alternative `minikube service` command (no sudo, random port)
+  - Enhanced troubleshooting section with specific sudo-related cases
+- Updated demo-app documentation for Minikube
+  - Clear instructions to deploy only deployment.yaml and service.yaml
+  - Emphasized sudo requirement in multiple places
+  - Added three access options (LoadBalancer, minikube service, port-forward)
+- Improved test-loadbalancing.sh for Minikube
+  - Added port 80 listening check before testing
+  - Provides helpful error messages if tunnel not running with sudo
+  - Clear instructions to run `sudo minikube tunnel`
+- Updated QUICK_TEST.md with Minikube-specific deploy commands
+
+### Documentation
+- Clarified that Minikube + LoadBalancer service is the recommended approach
+- Ingress addon not needed when using LoadBalancer with minikube tunnel
+- Added examples for all three access methods (tunnel, minikube service, port-forward)
+
 ## [1.2.0] - 2026-01-22
 
 ### Added
