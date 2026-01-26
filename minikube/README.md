@@ -160,6 +160,52 @@ minikube delete -p dev-cluster
 - Development with full K8s compatibility
 - Testing with different K8s versions
 
+## LoadBalancer Services
+
+Minikube supports LoadBalancer services via `minikube tunnel`.
+
+### Important: sudo is required for privileged ports
+
+For ports < 1024 (like port 80), you **must** run tunnel with sudo:
+
+```bash
+# WRONG - will not work for port 80
+minikube tunnel
+
+# CORRECT - works for port 80
+sudo minikube tunnel
+```
+
+**Why?** Ports below 1024 are privileged ports on macOS/Linux and require root access.
+
+### Using minikube tunnel
+
+```bash
+# Start tunnel in separate terminal (enter password when prompted)
+sudo minikube tunnel
+
+# Then deploy LoadBalancer service
+kubectl apply -f service.yaml
+
+# Access on localhost
+curl http://localhost:80
+```
+
+**Note:** Keep the tunnel terminal open - it must stay running for LoadBalancer to work.
+
+### Alternative: minikube service (no sudo required)
+
+If you don't want to use sudo, use `minikube service` which creates a tunnel on a random high port:
+
+```bash
+# Get URL (creates tunnel on random port like 60677)
+minikube service demo-app --url
+# Output: http://127.0.0.1:60677
+
+# Access via that URL
+curl http://127.0.0.1:60677
+```
+
 ## Troubleshooting
 
 ### Cluster won't start
@@ -172,15 +218,33 @@ minikube start --driver=docker
 minikube logs
 ```
 
-### Service not accessible
+### Service not accessible (LoadBalancer shows <pending>)
 ```bash
-# Use minikube tunnel
-minikube tunnel
+# Check if tunnel is running
+ps aux | grep "minikube tunnel"
 
-# Or port-forward
+# Start tunnel with sudo
+sudo minikube tunnel
+
+# Verify service got EXTERNAL-IP
+kubectl get svc
+```
+
+### Service not accessible (LoadBalancer has EXTERNAL-IP but connection refused)
+```bash
+# Check if port is listening
+lsof -nP -iTCP:80
+
+# If not listening, restart tunnel with sudo
+sudo minikube tunnel
+```
+
+### Service not accessible (other cases)
+```bash
+# Alternative: Use port-forward
 kubectl port-forward svc/my-service 8080:80
 
-# Or get service URL
+# Or get service URL (random port, no sudo needed)
 minikube service my-service --url
 ```
 

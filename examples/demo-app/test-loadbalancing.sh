@@ -67,7 +67,21 @@ if kubectl config current-context | grep -q "kind"; then
     fi
 elif kubectl config current-context | grep -q "minikube"; then
     echo -e "${YELLOW}Detected Minikube cluster${NC}"
-    echo "Make sure 'minikube tunnel' is running in another terminal"
+    echo "LoadBalancer service requires 'sudo minikube tunnel' for port 80"
+    echo ""
+    echo "Run in another terminal:"
+    echo -e "  ${GREEN}sudo minikube tunnel${NC}"
+    echo "  (Enter password when prompted)"
+    echo ""
+    
+    # Check if port 80 is listening
+    if ! lsof -nP -iTCP:80 -sTCP:LISTEN > /dev/null 2>&1; then
+        echo -e "${YELLOW}Warning: Port 80 is not listening!${NC}"
+        echo "Make sure 'sudo minikube tunnel' is running (sudo is required for port 80)"
+    else
+        echo -e "${GREEN}Port 80 is listening - tunnel is ready!${NC}"
+    fi
+    
     read -r -p "Press Enter when tunnel is ready..."
 fi
 

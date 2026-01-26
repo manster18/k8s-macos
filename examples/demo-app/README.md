@@ -91,18 +91,49 @@ open http://localhost:8080
 ```
 
 #### For Minikube:
-Use minikube tunnel or port-forward:
+
+**Important:** Deploy only `deployment.yaml` and `service.yaml` (NOT `ingress.yaml`):
 
 ```bash
-# Option 1: Tunnel (in separate terminal)
-minikube tunnel
+kubectl apply -f examples/demo-app/deployment.yaml
+kubectl apply -f examples/demo-app/service.yaml
+```
 
-# Then access
+**Option 1: LoadBalancer with minikube tunnel (Recommended - with load balancing)**
+
+LoadBalancer service requires `sudo minikube tunnel` for port 80 access:
+
+```bash
+# In separate terminal - MUST use sudo for port 80!
+sudo minikube tunnel
+# Enter password when prompted
+# Keep this terminal open
+
+# Then access (in another terminal)
+curl http://localhost
 open http://localhost
+```
 
-# Option 2: Port-forward
+**Why sudo?** Port 80 is a privileged port (< 1024) and requires root access on macOS/Linux.
+
+**Option 2: minikube service (No sudo, random port)**
+
+```bash
+# Get URL with random high port (no sudo needed)
+minikube service demo-app --url
+# Output: http://127.0.0.1:60677 (port will vary)
+
+# Access via that URL
+open http://127.0.0.1:60677
+```
+
+**Option 3: Port-forward (No load balancing)**
+
+```bash
 kubectl port-forward svc/demo-app 8080:80
 open http://localhost:8080
+
+# Note: port-forward connects to a single pod only
 ```
 
 ## What You'll See
